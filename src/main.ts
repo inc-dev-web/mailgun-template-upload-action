@@ -8,9 +8,9 @@ import FormData = require('form-data');
 
 const MAILGUN_API_KEY = core.getInput('mailgun-api-key');
 const MAILGUN_DOMAIN = core.getInput('mailgun-domain');
+const TEMPLATES_FOLDER_PATH = core.getInput('templates-folder-path')
 const BASE_URL = `https://api.mailgun.net/v3/`;
 const commitHash = github.context.sha;
-const mailsFolderPath = path.join(__dirname, 'html_templates');
 
 const headers = {
     'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
@@ -36,7 +36,7 @@ const loadMjmlFiles = (folderPath: string): Record<string, string> => {
 };
 
 //LOAD TEMPOLATES TO SOMETHING
-const mjmlFiles = loadMjmlFiles(mailsFolderPath);
+const mjmlFiles = loadMjmlFiles(TEMPLATES_FOLDER_PATH);
 
 const MjmlTemplates: Record<string, string> = {};
 
