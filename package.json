@@ -2,9 +2,9 @@
   "name": "mail",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/main.js",
+  "main": "main.js",
   "scripts": {
-    "build": "tsc ./src/main.ts --outDir dist",
+    "build": "tsc ./src/main.ts --outDir .",
     "postinstall": "husky"
   },
   "author": "",
