@@ -2,9 +2,10 @@
   "name": "mail",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/main.js",
   "scripts": {
-    "build": "mjml ./mjml_templates/*.mjml --config.minify true -o ./html_templates"
+    "build": "tsc ./src/main.ts --outDir dist",
+    "postinstall": "husky"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,8 @@
     "form-data": "^4.0.0",
     "mjml": "^4.15.3",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11"
   }
 }
