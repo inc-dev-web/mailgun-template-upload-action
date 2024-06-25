@@ -36945,9 +36945,9 @@ var path = __toESM(require("path"));
 var FormData3 = require_form_data();
 var MAILGUN_API_KEY = core.getInput("mailgun-api-key");
 var MAILGUN_DOMAIN = core.getInput("mailgun-domain");
+var TEMPLATES_FOLDER_PATH = core.getInput("templates-folder-path");
 var BASE_URL = `https://api.mailgun.net/v3/`;
 var commitHash = github.context.sha;
-var mailsFolderPath = path.join(__dirname, "html_templates");
 var headers = {
   "Authorization": "Basic " + Buffer.from(`api:${MAILGUN_API_KEY}`).toString("base64")
 };
@@ -36965,7 +36965,7 @@ var loadMjmlFiles = (folderPath) => {
   });
   return mjmlFiles2;
 };
-var mjmlFiles = loadMjmlFiles(mailsFolderPath);
+var mjmlFiles = loadMjmlFiles(TEMPLATES_FOLDER_PATH);
 var MjmlTemplates = {};
 Object.keys(mjmlFiles).forEach((fileName) => {
   MjmlTemplates[fileName.toUpperCase()] = fileName;
