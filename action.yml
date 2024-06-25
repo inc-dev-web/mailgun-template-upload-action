@@ -1,3 +1,21 @@
+name: "Mailgun Template Upload GitHub Action"
+author: stoplg & Inc-Dev
+description: "Publish template to Mailgun"
+branding:
+  icon: "mail"
+  color: "red"
+inputs:
+  mailgun-api-key:
+    description: "Mailgun API Key"
+    required: true
+  mailgun-host:
+    description: "Mailgun API Key"
+    required: true
+  mailgun-domain:
+    description: "Mailgun domain"
+    required: true
+  
+
 runs:
   using: 'node20'
   main: 'main.js'
