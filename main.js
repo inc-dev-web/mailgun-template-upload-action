@@ -36976,7 +36976,8 @@ async function getMailgunTemplateNames() {
       `${BASE_URL}${MAILGUN_DOMAIN}/templates`,
       { "headers": headers }
     );
-    return response.data.items;
+    const templateNames = response.data.items.map((template) => template.name);
+    return templateNames;
   } catch (error) {
     console.error("Error fetching templates:", error);
   }
