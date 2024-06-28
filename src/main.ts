@@ -16,8 +16,19 @@ const headers = {
     'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
 };
 
+function getDirectories(path: string) {
+    return fs.readdirSync(path).filter(function (file) {
+      return fs.statSync(path+'/'+file).isDirectory();
+    });
+  }
+
 //FUNCTION TO READ ALL TEMPLATES
 const loadMjmlFiles = (folderPath: string): Record<string, string> => {
+
+    console.log("DIRECTORIES");
+
+    console.log(getDirectories(folderPath));
+
     const mjmlFiles: Record<string, string> = {};
     const files = fs.readdirSync(folderPath);
 

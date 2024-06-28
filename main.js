@@ -36951,7 +36951,14 @@ var commitHash = github.context.sha;
 var headers = {
   "Authorization": "Basic " + Buffer.from(`api:${MAILGUN_API_KEY}`).toString("base64")
 };
+function getDirectories(path2) {
+  return fs.readdirSync(path2).filter(function(file) {
+    return fs.statSync(path2 + "/" + file).isDirectory();
+  });
+}
 var loadMjmlFiles = (folderPath) => {
+  console.log("DIRECTORIES");
+  console.log(getDirectories(folderPath));
   const mjmlFiles2 = {};
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
