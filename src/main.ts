@@ -16,8 +16,8 @@ const headers = {
 };
 
 //READ ALL TEMPLATES FUNCTION
-const loadMjmlFiles = (folderPath: string): Record<string, string> => {
-    const mjmlFiles: Record<string, string> = {};
+const loadHtmlFiles = (folderPath: string): Record<string, string> => {
+    const htmlFiles: Record<string, string> = {};
     const files = fs.readdirSync(folderPath);
 
     files.forEach(file => {
@@ -27,31 +27,31 @@ const loadMjmlFiles = (folderPath: string): Record<string, string> => {
         if (fileStat.isFile() && path.extname(fullPath) === '.html') {
             const fileName = path.basename(fullPath, '.html');
             const fileContent = fs.readFileSync(fullPath, 'utf-8');
-            mjmlFiles[fileName] = fileContent;
+            htmlFiles[fileName] = fileContent;
         }
     });
 
-    return mjmlFiles;
+    return htmlFiles;
 };
 
 //LOAD TEMPLATES TO SOMETHING
-const mjmlFiles = loadMjmlFiles(TEMPLATES_FOLDER_PATH);
+const htmlFiles = loadHtmlFiles(TEMPLATES_FOLDER_PATH);
 
-const MjmlTemplates: Record<string, string> = {};
+const HtmlTemplates: Record<string, string> = {};
 
 //MAKE OBJECT WITH TEMPLATES
-Object.keys(mjmlFiles).forEach(fileName => {
-    MjmlTemplates[fileName.toUpperCase()] = fileName;
+Object.keys(htmlFiles).forEach(fileName => {
+    HtmlTemplates[fileName.toUpperCase()] = fileName;
 });
 
 //GET EXISTING MAILGUN TEMPLATES
-async function getMailgunTemplateNames(){
+async function getMailgunTemplateNames() {
     try {
         const response = await axios.get(`${BASE_URL}${MAILGUN_DOMAIN}/templates`,
             { "headers": headers }
         );
-       const templateNames = response.data.items.map((template: { name: string; }) => template.name);
-    return templateNames;
+        const templateNames = response.data.items.map((template: { name: string; }) => template.name);
+        return templateNames;
     } catch (error) {
         console.error('Error fetching templates:', error);
     }
@@ -63,9 +63,9 @@ const uploadMailgunTemplate = async (templateName: string, templateContent: stri
         const form = new FormData();
         form.append('name', templateName);
         form.append('template', templateContent);
-        form.append('tag',commitHash);
-        form.append('template','html');
-        form.append( 'comment', `Created by GitHub action upon pushing commit #${commitHash} to repository ${github.context.repo.repo}`);
+        form.append('tag', commitHash);
+        form.append('template', 'html');
+        form.append('comment', `Created by GitHub action upon pushing commit #${commitHash} to repository ${github.context.repo.repo}`);
         const headers = {
             'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
         };
@@ -85,14 +85,14 @@ const uploadMailgunTemplate = async (templateName: string, templateContent: stri
 };
 
 //SEND UPDATE TEMPLATE REQUEST
-const updateMailgunTemplate  = async (templateName: string, templateContent: string) => {
+const updateMailgunTemplate = async (templateName: string, templateContent: string) => {
     try {
         const form = new FormData();
         form.append('name', templateName);
         form.append('template', templateContent);
-        form.append('tag',commitHash);
-        form.append('template','html');
-        form.append( 'comment', `Updated by GitHub action upon pushing commit #${commitHash} to repository ${github.context.repo.repo}`);
+        form.append('tag', commitHash);
+        form.append('template', 'html');
+        form.append('comment', `Updated by GitHub action upon pushing commit #${commitHash} to repository ${github.context.repo.repo}`);
         const headers = {
             'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
         };
@@ -112,24 +112,19 @@ const updateMailgunTemplate  = async (templateName: string, templateContent: str
 };
 
 //LOAD
-Object.entries(mjmlFiles).forEach(async([templateName, templateContent]) => {
+Object.entries(htmlFiles).forEach(async ([templateName, templateContent]) => {
     const enumKey = templateName.toUpperCase();
-    const enumValue = MjmlTemplates[enumKey];
-    const mailgunTemplateNames =  await getMailgunTemplateNames();
-
-    console.log("TEMPLATES:  ");
-    console.log(mailgunTemplateNames);
-    console.log("TEMPALTE NAME: ")
-    console.log(templateName);
+    const enumValue = HtmlTemplates[enumKey];
+    const mailgunTemplateNames = await getMailgunTemplateNames();
 
     if (enumValue) {
         if (mailgunTemplateNames.includes(templateName)) {
             updateMailgunTemplate(enumValue, templateContent);
         }
-        else{
+        else {
             uploadMailgunTemplate(enumValue, templateContent);
         }
     } else {
-        console.warn(`Template "${templateName}" is not defined in MjmlTemplates. Skipping upload.`);
+        console.warn(`Template "${templateName}" is not defined in HtmlTemplates. Skipping upload.`);
     }
 });

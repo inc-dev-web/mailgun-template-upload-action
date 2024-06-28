@@ -36951,8 +36951,8 @@ var commitHash = github.context.sha;
 var headers = {
   "Authorization": "Basic " + Buffer.from(`api:${MAILGUN_API_KEY}`).toString("base64")
 };
-var loadMjmlFiles = (folderPath) => {
-  const mjmlFiles2 = {};
+var loadHtmlFiles = (folderPath) => {
+  const htmlFiles2 = {};
   const files = fs.readdirSync(folderPath);
   files.forEach((file) => {
     const fullPath = path.join(folderPath, file);
@@ -36960,15 +36960,15 @@ var loadMjmlFiles = (folderPath) => {
     if (fileStat.isFile() && path.extname(fullPath) === ".html") {
       const fileName = path.basename(fullPath, ".html");
       const fileContent = fs.readFileSync(fullPath, "utf-8");
-      mjmlFiles2[fileName] = fileContent;
+      htmlFiles2[fileName] = fileContent;
     }
   });
-  return mjmlFiles2;
+  return htmlFiles2;
 };
-var mjmlFiles = loadMjmlFiles(TEMPLATES_FOLDER_PATH);
-var MjmlTemplates = {};
-Object.keys(mjmlFiles).forEach((fileName) => {
-  MjmlTemplates[fileName.toUpperCase()] = fileName;
+var htmlFiles = loadHtmlFiles(TEMPLATES_FOLDER_PATH);
+var HtmlTemplates = {};
+Object.keys(htmlFiles).forEach((fileName) => {
+  HtmlTemplates[fileName.toUpperCase()] = fileName;
 });
 async function getMailgunTemplateNames() {
   try {
@@ -37028,14 +37028,10 @@ var updateMailgunTemplate = async (templateName, templateContent) => {
     console.error("Error updating template:", error);
   }
 };
-Object.entries(mjmlFiles).forEach(async ([templateName, templateContent]) => {
+Object.entries(htmlFiles).forEach(async ([templateName, templateContent]) => {
   const enumKey = templateName.toUpperCase();
-  const enumValue = MjmlTemplates[enumKey];
+  const enumValue = HtmlTemplates[enumKey];
   const mailgunTemplateNames = await getMailgunTemplateNames();
-  console.log("TEMPLATES:  ");
-  console.log(mailgunTemplateNames);
-  console.log("TEMPALTE NAME: ");
-  console.log(templateName);
   if (enumValue) {
     if (mailgunTemplateNames.includes(templateName)) {
       updateMailgunTemplate(enumValue, templateContent);
@@ -37043,7 +37039,7 @@ Object.entries(mjmlFiles).forEach(async ([templateName, templateContent]) => {
       uploadMailgunTemplate(enumValue, templateContent);
     }
   } else {
-    console.warn(`Template "${templateName}" is not defined in MjmlTemplates. Skipping upload.`);
+    console.warn(`Template "${templateName}" is not defined in HtmlTemplates. Skipping upload.`);
   }
 });
 /*! Bundled license information:
