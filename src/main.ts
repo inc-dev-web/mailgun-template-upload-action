@@ -50,7 +50,8 @@ async function getMailgunTemplateNames(){
         const response = await axios.get(`${BASE_URL}${MAILGUN_DOMAIN}/templates`,
             { "headers": headers }
         );
-        return response.data.items;
+       const templateNames = response.data.items.map((template: { name: string; }) => template.name);
+    return templateNames;
     } catch (error) {
         console.error('Error fetching templates:', error);
     }
@@ -114,7 +115,7 @@ const updateMailgunTemplate  = async (templateName: string, templateContent: str
 Object.entries(mjmlFiles).forEach(async([templateName, templateContent]) => {
     const enumKey = templateName.toUpperCase();
     const enumValue = MjmlTemplates[enumKey];
-    const mailgunTemplateNames = await getMailgunTemplateNames();
+    const mailgunTemplateNames =  await getMailgunTemplateNames();
 
     console.log("TEMPLATES:  ");
     console.log(mailgunTemplateNames);
