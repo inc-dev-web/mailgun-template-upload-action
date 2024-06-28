@@ -37001,7 +37001,7 @@ var uploadMailgunTemplate = async (templateName, templateContent) => {
     );
     console.log("Template created successfully:", createTemplateResponse.data);
   } catch (error) {
-    console.error("Error uploading template:", error);
+    console.error("Error uploaded template:", error);
   }
 };
 var updateMailgunTemplate = async (templateName, templateContent) => {
@@ -37022,9 +37022,9 @@ var updateMailgunTemplate = async (templateName, templateContent) => {
         "headers": headers2
       }
     );
-    console.log("Template created successfully:", createTemplateResponse.data);
+    console.log("Template updated successfully:", createTemplateResponse.data);
   } catch (error) {
-    console.error("Error uploading template:", error);
+    console.error("Error updating template:", error);
   }
 };
 Object.entries(mjmlFiles).forEach(async ([templateName, templateContent]) => {
