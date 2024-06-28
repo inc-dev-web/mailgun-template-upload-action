@@ -36973,7 +36973,7 @@ Object.keys(mjmlFiles).forEach((fileName) => {
 async function getMailgunTemplateNames() {
   try {
     const response = await axios_default.get(
-      `${BASE_URL}/templates`,
+      `${BASE_URL}${MAILGUN_DOMAIN}/templates`,
       { "headers": headers }
     );
     return response.data.items;
