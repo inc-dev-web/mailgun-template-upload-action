@@ -78,7 +78,7 @@ const uploadMailgunTemplate = async (templateName: string, templateContent: stri
 
         console.log('Template created successfully:', createTemplateResponse.data);
     } catch (error) {
-        console.error('Error uploading template:', error as any);
+        console.error('Error uploaded template:', error as any);
     }
 
 };
@@ -103,9 +103,9 @@ const updateMailgunTemplate  = async (templateName: string, templateContent: str
             }
         );
 
-        console.log('Template created successfully:', createTemplateResponse.data);
+        console.log('Template updated successfully:', createTemplateResponse.data);
     } catch (error) {
-        console.error('Error uploading template:', error as any);
+        console.error('Error updating template:', error as any);
     }
 
 };
