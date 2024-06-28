@@ -116,6 +116,11 @@ Object.entries(mjmlFiles).forEach(async([templateName, templateContent]) => {
     const enumValue = MjmlTemplates[enumKey];
     const mailgunTemplateNames = await getMailgunTemplateNames();
 
+    console.log("TEMPLATES:  ");
+    console.log(mailgunTemplateNames);
+    console.log("TEMPALTE NAME: ")
+    console.log(templateName);
+
     if (enumValue) {
         if (mailgunTemplateNames.includes(templateName)) {
             updateMailgunTemplate(enumValue, templateContent);
