@@ -5,7 +5,6 @@ import * as github from '@actions/github';
 import * as path from 'path';
 import FormData = require('form-data');
 
-
 const MAILGUN_API_KEY = core.getInput('mailgun-api-key');
 const MAILGUN_DOMAIN = core.getInput('mailgun-domain');
 const TEMPLATES_FOLDER_PATH = core.getInput('templates-folder-path')
@@ -16,19 +15,8 @@ const headers = {
     'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
 };
 
-function getDirectories(path: string) {
-    return fs.readdirSync(path).filter(function (file) {
-      return fs.statSync(path+'/'+file).isDirectory();
-    });
-  }
-
-//FUNCTION TO READ ALL TEMPLATES
+//READ ALL TEMPLATES FUNCTION
 const loadMjmlFiles = (folderPath: string): Record<string, string> => {
-
-    console.log("DIRECTORIES");
-
-    console.log(getDirectories(folderPath));
-
     const mjmlFiles: Record<string, string> = {};
     const files = fs.readdirSync(folderPath);
 
@@ -46,12 +34,12 @@ const loadMjmlFiles = (folderPath: string): Record<string, string> => {
     return mjmlFiles;
 };
 
-//LOAD TEMPOLATES TO SOMETHING
+//LOAD TEMPLATES TO SOMETHING
 const mjmlFiles = loadMjmlFiles(TEMPLATES_FOLDER_PATH);
 
 const MjmlTemplates: Record<string, string> = {};
 
-//MAKE IBJECT WITH TEMPLATES
+//MAKE OBJECT WITH TEMPLATES
 Object.keys(mjmlFiles).forEach(fileName => {
     MjmlTemplates[fileName.toUpperCase()] = fileName;
 });
