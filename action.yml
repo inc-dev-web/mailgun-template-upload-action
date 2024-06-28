@@ -6,7 +6,7 @@ branding:
   color: "red"
 inputs:
   templates-folder-path:
-    descritpion: "Path to templates folder"
+    description: "Path to templates folder"
     required: true
   mailgun-api-key:
     description: "Mailgun API Key"
