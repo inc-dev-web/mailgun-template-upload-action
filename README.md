@@ -23,7 +23,7 @@ GitHub Action for updating and uploading (if template with this name not found) 
               uses: actions/checkout@v2
 
             - name: Upload templates
-              uses: inc-dev-web/mailgun-template-upload-action@1
+              uses: inc-dev-web/mailgun-template-upload-action@v1
               with:
                 #path to folder with templates in your repository, example: '${{ github.workspace }}/html_templates'
                 templates-folder-path: YOUR_PATH_TO_TEMPLATES_FOLDER 
