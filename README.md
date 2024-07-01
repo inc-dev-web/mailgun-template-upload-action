@@ -33,5 +33,5 @@ GitHub Action for updating and uploading (if template with this name not found) 
                 mailgun-domain: YOUR_MAILGUN_DOMAIN
    ```
 
-4. Replace `YOUR_PATH_TO_TEMPLATES_FOLDER` and `YOUR_MAILGUN_DOMAIN` with the appropriate values to your Pages project.
+4. Replace `YOUR_PATH_TO_TEMPLATES_FOLDER` and `YOUR_MAILGUN_DOMAIN` with the appropriate values to your project.
 
