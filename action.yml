@@ -12,7 +12,7 @@ inputs:
     description: "Mailgun API Key"
     required: true
   mailgun-host:
-    description: "Mailgun API Key"
+    description: "Mailgun Host"
     required: true
   mailgun-domain:
     description: "Mailgun domain"
