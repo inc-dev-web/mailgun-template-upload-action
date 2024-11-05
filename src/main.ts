@@ -7,7 +7,7 @@ import FormData = require('form-data');
 
 const MAILGUN_API_KEY = core.getInput('mailgun-api-key');
 const MAILGUN_DOMAIN = core.getInput('mailgun-domain');
-const TEMPLATES_FOLDER_PATH = core.getInput('templates-folder-path')
+const TEMPLATES_FOLDER_PATH = core.getInput('templates-folder-path');
 const BASE_URL = `https://api.mailgun.net/v3/`;
 const commitHash = github.context.sha;
 
@@ -34,7 +34,7 @@ const loadHtmlFiles = (folderPath: string): Record<string, string> => {
     return htmlFiles;
 };
 
-//LOAD HTML TEMPLATES
+//LOAD TEMPLATES TO SOMETHING
 const htmlFiles = loadHtmlFiles(TEMPLATES_FOLDER_PATH);
 
 const HtmlTemplates: Record<string, string> = {};
@@ -103,26 +103,29 @@ const updateMailgunTemplate = async (templateName: string, templateContent: stri
             }
         );
 
+        const versionId = createTemplateResponse.data.id;
         console.log('Template updated successfully:', createTemplateResponse.data);
-        await setActiveTemplateVersion(templateName, commitHash);
+
+        // Установите новую версию как активную
+        await setActiveTemplateVersion(templateName, versionId);
     } catch (error) {
         console.error('Error updating template:', error as any);
     }
 };
 
-// SET NEW VERSION AS ACTIVE
-const setActiveTemplateVersion = async (templateName: string, versionTag: string) => {
+// Установите новую версию как активную
+const setActiveTemplateVersion = async (templateName: string, versionId: string) => {
     try {
         const headers = {
             'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
         };
 
-        await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionTag}`,
+        await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionId}`,
             { active: true },
             { headers }
         );
 
-        console.log(`Template version ${versionTag} is now active.`);
+        console.log(`Template version ${versionId} is now active.`);
     } catch (error) {
         console.error('Error activating template version:', error as any);
     }
