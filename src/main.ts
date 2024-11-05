@@ -34,7 +34,7 @@ const loadHtmlFiles = (folderPath: string): Record<string, string> => {
     return htmlFiles;
 };
 
-//LOAD TEMPLATES TO SOMETHING
+//LOAD HTML TEMPLATES
 const htmlFiles = loadHtmlFiles(TEMPLATES_FOLDER_PATH);
 
 const HtmlTemplates: Record<string, string> = {};
@@ -81,7 +81,6 @@ const uploadMailgunTemplate = async (templateName: string, templateContent: stri
     } catch (error) {
         console.error('Error uploaded template:', error as any);
     }
-
 };
 
 //SEND UPDATE TEMPLATE REQUEST
@@ -105,10 +104,28 @@ const updateMailgunTemplate = async (templateName: string, templateContent: stri
         );
 
         console.log('Template updated successfully:', createTemplateResponse.data);
+        await setActiveTemplateVersion(templateName, commitHash);
     } catch (error) {
         console.error('Error updating template:', error as any);
     }
+};
 
+// SET NEW VERSION AS ACTIVE
+const setActiveTemplateVersion = async (templateName: string, versionTag: string) => {
+    try {
+        const headers = {
+            'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
+        };
+
+        await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionTag}`,
+            { active: true },
+            { headers }
+        );
+
+        console.log(`Template version ${versionTag} is now active.`);
+    } catch (error) {
+        console.error('Error activating template version:', error as any);
+    }
 };
 
 //LOAD
