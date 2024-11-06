@@ -37918,6 +37918,7 @@ var uploadMailgunTemplate = async (templateName, templateContent) => {
       }
     );
     console.log("Template created successfully:", createTemplateResponse.data);
+    await setActiveTemplateVersion(createTemplateResponse.data.template.id, createTemplateResponse.data.version.id);
   } catch (error) {
     console.error("Error uploaded template:", error);
   }
@@ -37940,22 +37941,24 @@ var updateMailgunTemplate = async (templateName, templateContent) => {
         "headers": headers2
       }
     );
-    const versionId = createTemplateResponse.data.id;
+    const versionTag = createTemplateResponse.data.template.version.tag;
     console.log("Template updated successfully:", createTemplateResponse.data);
-    await setActiveTemplateVersion(templateName, versionId);
+    await setActiveTemplateVersion(templateName, versionTag);
   } catch (error) {
     console.error("Error updating template:", error);
   }
 };
-var setActiveTemplateVersion = async (templateName, versionId) => {
+var setActiveTemplateVersion = async (templateId, versionId) => {
   try {
     const headers2 = {
       "Authorization": "Basic " + Buffer.from(`api:${MAILGUN_API_KEY}`).toString("base64")
     };
     const response = await axios_default.put(
-      `${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionId}`,
+      `${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateId}/versions/${versionId}`,
       { active: true },
-      { headers: headers2 }
+      {
+        "headers": headers2
+      }
     );
     if (response.status === 200) {
       console.log(`Template version ${versionId} is now active.`);
