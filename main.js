@@ -37888,6 +37888,17 @@ async function getMailgunTemplateNames() {
     console.error("Error fetching templates:", error);
   }
 }
+async function getMailgunTemplateVersion(templateName) {
+  try {
+    const response = await axios_default.get(
+      `${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/active`,
+      { "headers": headers }
+    );
+    return response.data.template;
+  } catch (error) {
+    console.error(`Error fetching template version for ${templateName}:`, error);
+  }
+}
 var uploadMailgunTemplate = async (templateName, templateContent) => {
   try {
     const form = new FormData3();
@@ -37941,12 +37952,16 @@ var setActiveTemplateVersion = async (templateName, versionId) => {
     const headers2 = {
       "Authorization": "Basic " + Buffer.from(`api:${MAILGUN_API_KEY}`).toString("base64")
     };
-    await axios_default.put(
+    const response = await axios_default.put(
       `${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionId}`,
       { active: true },
       { headers: headers2 }
     );
-    console.log(`Template version ${versionId} is now active.`);
+    if (response.status === 200) {
+      console.log(`Template version ${versionId} is now active.`);
+    } else {
+      console.error(`Failed to activate template version ${versionId}:`, response.data);
+    }
   } catch (error) {
     console.error("Error activating template version:", error);
   }
@@ -37957,7 +37972,12 @@ Object.entries(htmlFiles).forEach(async ([templateName, templateContent]) => {
   const mailgunTemplateNames = await getMailgunTemplateNames();
   if (enumValue) {
     if (mailgunTemplateNames.includes(templateName)) {
-      updateMailgunTemplate(enumValue, templateContent);
+      const existingTemplateVersion = await getMailgunTemplateVersion(templateName);
+      if (existingTemplateVersion !== templateContent) {
+        updateMailgunTemplate(enumValue, templateContent);
+      } else {
+        console.log(`No changes detected for template "${templateName}". Skipping update.`);
+      }
     } else {
       uploadMailgunTemplate(enumValue, templateContent);
     }

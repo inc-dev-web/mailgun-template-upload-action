@@ -57,6 +57,18 @@ async function getMailgunTemplateNames() {
     }
 }
 
+//GET TEMPLATE VERSION CONTENT
+async function getMailgunTemplateVersion(templateName: string) {
+    try {
+        const response = await axios.get(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/active`,
+            { "headers": headers }
+        );
+        return response.data.template;
+    } catch (error) {
+        console.error(`Error fetching template version for ${templateName}:`, error);
+    }
+}
+
 //SEND UPLOAD TEMPLATE REQUEST
 const uploadMailgunTemplate = async (templateName: string, templateContent: string) => {
     try {
@@ -106,26 +118,30 @@ const updateMailgunTemplate = async (templateName: string, templateContent: stri
         const versionId = createTemplateResponse.data.id;
         console.log('Template updated successfully:', createTemplateResponse.data);
 
-        // Установите новую версию как активную
         await setActiveTemplateVersion(templateName, versionId);
+
     } catch (error) {
         console.error('Error updating template:', error as any);
     }
 };
 
-// Установите новую версию как активную
+//SET NEW VERSION AS ACTIVE
 const setActiveTemplateVersion = async (templateName: string, versionId: string) => {
     try {
         const headers = {
             'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
         };
 
-        await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionId}`,
+        const response = await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/versions/${versionId}`,
             { active: true },
             { headers }
         );
 
-        console.log(`Template version ${versionId} is now active.`);
+        if (response.status === 200) {
+            console.log(`Template version ${versionId} is now active.`);
+        } else {
+            console.error(`Failed to activate template version ${versionId}:`, response.data);
+        }
     } catch (error) {
         console.error('Error activating template version:', error as any);
     }
@@ -139,9 +155,13 @@ Object.entries(htmlFiles).forEach(async ([templateName, templateContent]) => {
 
     if (enumValue) {
         if (mailgunTemplateNames.includes(templateName)) {
-            updateMailgunTemplate(enumValue, templateContent);
-        }
-        else {
+            const existingTemplateVersion = await getMailgunTemplateVersion(templateName);
+            if (existingTemplateVersion !== templateContent) {
+                updateMailgunTemplate(enumValue, templateContent);
+            } else {
+                console.log(`No changes detected for template "${templateName}". Skipping update.`);
+            }
+        } else {
             uploadMailgunTemplate(enumValue, templateContent);
         }
     } else {
