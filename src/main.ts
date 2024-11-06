@@ -58,12 +58,12 @@ async function getMailgunTemplateNames() {
 }
 
 //GET TEMPLATE VERSION CONTENT
-async function getMailgunTemplateVersion(templateName: string) {
+async function getMailgunTemplateActiveVersion(templateName: string) {
     try {
-        const response = await axios.get(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}/active`,
+        const response = await axios.get(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateName}?active=true`,
             { "headers": headers }
         );
-        return response.data.template;
+        return response.data.template.version.template;
     } catch (error) {
         console.error(`Error fetching template version for ${templateName}:`, error);
     }
@@ -159,7 +159,7 @@ Object.entries(htmlFiles).forEach(async ([templateName, templateContent]) => {
 
     if (enumValue) {
         if (mailgunTemplateNames.includes(templateName)) {
-            const existingTemplateVersion = await getMailgunTemplateVersion(templateName);
+            const existingTemplateVersion = await getMailgunTemplateActiveVersion(templateName);
             if (existingTemplateVersion !== templateContent) {
                 updateMailgunTemplate(enumValue, templateContent);
             } else {
