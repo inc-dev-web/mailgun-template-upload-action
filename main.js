@@ -37949,13 +37949,15 @@ var updateMailgunTemplate = async (templateName, templateContent) => {
   }
 };
 var setActiveTemplateVersion = async (templateId, versionId) => {
+  const form = new FormData3();
+  form.append("active", "yes");
   try {
     const headers2 = {
       "Authorization": "Basic " + Buffer.from(`api:${MAILGUN_API_KEY}`).toString("base64")
     };
     const response = await axios_default.put(
       `${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateId}/versions/${versionId}`,
-      { active: "yes" },
+      form,
       {
         "headers": headers2
       }

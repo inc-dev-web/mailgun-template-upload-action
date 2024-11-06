@@ -129,13 +129,16 @@ const updateMailgunTemplate = async (templateName: string, templateContent: stri
 
 //SET NEW VERSION AS ACTIVE
 const setActiveTemplateVersion = async (templateId: string, versionId: string) => {
+
+    const form = new FormData();
+    form.append('active', "yes");
     try {
         const headers = {
             'Authorization': 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64')
         };
 
         const response = await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateId}/versions/${versionId}`,
-            { active: "yes" },
+            form,
             {
                 "headers": headers
             }
