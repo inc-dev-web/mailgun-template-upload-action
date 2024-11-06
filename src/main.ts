@@ -135,7 +135,7 @@ const setActiveTemplateVersion = async (templateId: string, versionId: string) =
         };
 
         const response = await axios.put(`${BASE_URL}${MAILGUN_DOMAIN}/templates/${templateId}/versions/${versionId}`,
-            { active: true },
+            { active: "yes" },
             {
                 "headers": headers
             }
